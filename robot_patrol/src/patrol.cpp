@@ -38,10 +38,6 @@ private:
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_pub_;
     rclcpp::TimerBase::SharedPtr timer_;
     
-    void laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg) {
-        float front = msg->ranges[0];
-        RCLCPP_INFO(this->get_logger(), "Front distance: %f", front);    
-    }
     double direction_ = 0.0;
 
     void laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg) {
