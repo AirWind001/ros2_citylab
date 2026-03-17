@@ -67,7 +67,7 @@ private:
     int center_index = msg->ranges.size() / 2;
     double front_dist = msg->ranges[center_index];
 
-    if (front_dist < 0.35) {
+    if (front_dist < 0.45) {        // increase for real robot due to safety considerations
         direction_ = best_angle;
     } else {
         direction_ = 0.0;
@@ -77,7 +77,7 @@ void control_loop() {
 
     geometry_msgs::msg::Twist cmd;
 
-    cmd.linear.x = 0.1;
+    cmd.linear.x = 0.05;            // Decrease linear velocity due to safety considerations
     cmd.angular.z = direction_ / 2.0;
 
     cmd_pub_->publish(cmd);
