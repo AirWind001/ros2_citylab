@@ -16,13 +16,13 @@ public:
         RCLCPP_INFO(this->get_logger(), "Patrol node has been started.");
 
         laser_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
-        "/fastbot_1/scan", 
+        "/scan",                        // Change topic name for real-robot
         10, 
         std::bind(&Patrol::laser_callback, this, std::placeholders::_1)
         );
 
         cmd_pub_ = this->create_publisher<geometry_msgs::msg::Twist>(
-        "/fastbot_1/cmd_vel",
+        "/cmd_vel",                     // Change topic name for real-robot
         10
         );
 
@@ -40,10 +40,14 @@ private:
     
     double direction_ = 0.0;
 
-    void laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg) {
+void laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg) {
 
     int start_index = std::ceil(( -M_PI/2 - msg->angle_min) / msg->angle_increment);
     int end_index   = std::floor((  M_PI/2 - msg->angle_min) / msg->angle_increment);
+
+    RCLCPP_DEBUG(this->get_logger(),
+        "Scan window: start=%d end=%d total_points=%zu",
+        start_index, end_index, msg->ranges.size());
 
     double max_distance = 0.0;
     int best_index = start_index;
@@ -52,7 +56,14 @@ private:
 
         double dist = msg->ranges[i];
 
-        if (std::isinf(dist)) continue;
+        if (std::isinf(dist)) {
+            RCLCPP_DEBUG(this->get_logger(),
+                "Index %d: INF (ignored)", i);
+            continue;
+        }
+
+        // RCLCPP_DEBUG(this->get_logger(),
+        //     "Index %d: dist=%.3f", i, dist);
 
         if (dist > max_distance) {
             max_distance = dist;
@@ -63,22 +74,39 @@ private:
     // Convert index → angle
     double best_angle = msg->angle_min + best_index * msg->angle_increment;
 
+    RCLCPP_DEBUG(this->get_logger(),
+        "Best ray: index=%d distance=%.3f angle=%.3f rad",
+        best_index, max_distance, best_angle);
+
     // Check obstacle in front
     int center_index = msg->ranges.size() / 2;
     double front_dist = msg->ranges[center_index];
 
-    if (front_dist < 0.35) {
+    RCLCPP_DEBUG(this->get_logger(),
+        "Front distance: %.3f m (threshold=0.45)", front_dist);
+
+    if (front_dist < 0.45) {        // increased front distance to obstacle due to safety considerations
         direction_ = best_angle;
+
+        RCLCPP_DEBUG(this->get_logger(),
+            "Obstacle detected → turning. direction_=%.3f", direction_);
     } else {
         direction_ = 0.0;
+
+        RCLCPP_DEBUG(this->get_logger(),
+            "Path clear → moving straight");
     }
 }
 void control_loop() {
 
     geometry_msgs::msg::Twist cmd;
 
-    cmd.linear.x = 0.1;
-    cmd.angular.z = direction_ / 2.0;
+    cmd.linear.x = 0.05;        // Decreased linear velocity due to safety considerations
+    cmd.angular.z = direction_/ 2; // reduced from 2 to a factor of 1
+
+    RCLCPP_DEBUG(this->get_logger(),
+        "Publishing cmd_vel → linear.x=%.3f angular.z=%.3f",
+        cmd.linear.x, cmd.angular.z);
 
     cmd_pub_->publish(cmd);
 }
