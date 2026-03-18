@@ -15,8 +15,9 @@ def generate_launch_description():
         Node(
             package='robot_patrol',
             executable='patrol_node',
-            name='patrol',
-            output='screen'
+            name='patrol',            
+            output='screen',
+            arguments=['--ros-args', '--log-level', 'DEBUG']
         ),
     
         Node(
