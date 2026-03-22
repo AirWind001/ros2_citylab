@@ -42,9 +42,6 @@ private:
 
 void laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg) {
 
-    // int start_index = std::ceil(( -M_PI/2 - msg->angle_min) / msg->angle_increment);
-    // int end_index   = std::floor((  M_PI/2 - msg->angle_min) / msg->angle_increment);
-
     int start_index = 0;
     int end_index   = 449;    
 
@@ -68,24 +65,7 @@ void laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg) {
     int best_index_right = center_index;
     int best_index_left = center_index;
 
-    // for (int i = start_index; i <= end_index; i++) {
 
-    //     double dist = msg->ranges[i];
-
-    //     if (std::isinf(dist)) {
-    //         // RCLCPP_DEBUG(this->get_logger(),
-    //         //     "Index %d: INF (ignored)", i);
-    //         continue;
-    //     }
-
-    //     RCLCPP_DEBUG(this->get_logger(),
-    //         "Index %d: dist=%.3f", i, dist);
-
-    //     if (dist > max_distance) {
-    //         max_distance = dist;
-    //         best_index = i;
-    //     }
-    // }
 
     for (int i = 375; i <= 449; i++) {
                 double dist = msg->ranges[i];
