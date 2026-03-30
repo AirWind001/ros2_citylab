@@ -61,42 +61,23 @@ private:
 
             if (std::isinf(dist))
                 continue;
+            // RIGHT: [-π/2, -π/6)
+            if (angle >= -M_PI/2 && angle < -M_PI/6) {
+                total_right += dist;
+                count_right++;
+                RCLCPP_DEBUG(this->get_logger(),
+                    "Inside Right, total_right : %.2f count_right: %d",
+                    total_right, count_right);      
+            }
 
-            // // RIGHT: [-90, -30) 
-            // if (angle >= 3*M_PI/2 && angle < 11*M_PI/6) {
-            //     total_right += dist;
-            //     count_right++;
-            //     RCLCPP_DEBUG(this->get_logger(),
-            //         "Inside Right, total_right : %.2f count_right: %d",
-            //         total_right, count_right);                
-            // }            
-
-            // // FRONT: [-30, 30)
-            // else if ((angle >= 11*M_PI/6 && angle <= 2*M_PI) ||
-            //         (angle >= 0 && angle < M_PI/6)) {
-            //     total_front += dist;
-            //     count_front++;
-            //     RCLCPP_DEBUG(this->get_logger(),
-            //         "Inside Front, total_front : %.2f count_front: %d",
-            //         total_front, count_front);
-            // }
-// RIGHT: [-π/2, -π/6)
-if (angle >= -M_PI/2 && angle < -M_PI/6) {
-    total_right += dist;
-    count_right++;
-    RCLCPP_DEBUG(this->get_logger(),
-        "Inside Right, total_right : %.2f count_right: %d",
-        total_right, count_right);      
-}
-
-// FRONT: [-π/6, π/6)
-else if (angle >= -M_PI/6 && angle < M_PI/6) {
-    total_front += dist;
-    count_front++;
-    RCLCPP_DEBUG(this->get_logger(),
-        "Inside Front, total_front : %.2f count_front: %d",
-        total_front, count_front);    
-}            
+            // FRONT: [-π/6, π/6)
+            else if (angle >= -M_PI/6 && angle < M_PI/6) {
+                total_front += dist;
+                count_front++;
+                RCLCPP_DEBUG(this->get_logger(),
+                    "Inside Front, total_front : %.2f count_front: %d",
+                    total_front, count_front);    
+            }            
             // LEFT: [30, 90)
             else if (angle >= M_PI/6 && angle <= M_PI/2) {
                 total_left += dist;
