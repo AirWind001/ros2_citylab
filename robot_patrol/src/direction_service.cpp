@@ -93,12 +93,12 @@ private:
             total_right, total_front, total_left);
 
         // Decision logic
-        if (front_dist > 0.35) {
+        if (front_dist > 0.25) {
             response->direction = "forward";
             RCLCPP_DEBUG(this->get_logger(), "Decision: FORWARD");
             return;
         }
-
+        else{
         // Choose max section
         if (total_left > total_right && total_left > total_front) {
             response->direction = "left";
@@ -108,7 +108,9 @@ private:
         }
         else {
             response->direction = "forward";
+        }        
         }
+
 
         RCLCPP_DEBUG(this->get_logger(),
             "Decision: %s", response->direction.c_str());

@@ -15,13 +15,13 @@ public:
         RCLCPP_INFO(this->get_logger(), "Patrol with Service node started.");
 
         laser_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
-            "/fastbot_1/scan",
+            "/scan",
             10,
             std::bind(&PatrolWithService::laser_callback, this, _1)
         );
 
         cmd_pub_ = this->create_publisher<geometry_msgs::msg::Twist>(
-            "/fastbot_1/cmd_vel",
+            "/cmd_vel",
             10
         );
 
