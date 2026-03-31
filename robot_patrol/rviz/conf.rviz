@@ -10,7 +10,6 @@ Panels:
         - /RobotModel1
         - /LaserScan1
         - /Axes1
-        - /Axes1/Status1
         - /Odometry1
         - /Odometry1/Shape1
       Splitter Ratio: 0.5
@@ -32,7 +31,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -72,6 +71,30 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        fastbot_1_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fastbot_1_camera:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        fastbot_1_lidar:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fastbot_1_wheel_left:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        fastbot_1_wheel_right:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Mass Properties:
         Inertia: false
         Mass: false
@@ -126,23 +149,17 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        base_link:
+        fastbot_1_base_link:
           Value: true
-        camera_link:
+        fastbot_1_camera:
           Value: true
-        camera_sensor:
+        fastbot_1_lidar:
           Value: true
-        lidar_link:
+        fastbot_1_odom:
           Value: true
-        lidar_sensor:
+        fastbot_1_wheel_left:
           Value: true
-        motor_left:
-          Value: true
-        motor_right:
-          Value: true
-        odom:
-          Value: true
-        wheel_caster:
+        fastbot_1_wheel_right:
           Value: true
       Marker Scale: 0.5
       Name: TF
@@ -150,19 +167,15 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        odom:
-          base_link:
-            camera_sensor:
-              camera_link:
-                {}
-            lidar_sensor:
-              lidar_link:
-                {}
-            motor_left:
+        fastbot_1_odom:
+          fastbot_1_base_link:
+            fastbot_1_camera:
               {}
-            motor_right:
+            fastbot_1_lidar:
               {}
-            wheel_caster:
+            fastbot_1_wheel_left:
+              {}
+            fastbot_1_wheel_right:
               {}
       Update Interval: 0
       Value: true
@@ -208,7 +221,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: odom
+    Fixed Frame: fastbot_1_odom
     Frame Rate: 30
   Name: root
   Tools:

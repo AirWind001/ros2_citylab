@@ -11,6 +11,8 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(rclcpp_action REQUIRED)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -38,9 +40,91 @@ install(DIRECTORY
     launch
     DESTINATION share/${PROJECT_NAME}/
 )
-ament_package()
+
 
 install(
   DIRECTORY rviz
   DESTINATION share/${PROJECT_NAME}
 )
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/GetDirection.srv"
+  "action/GoToPose.action"  
+  DEPENDENCIES sensor_msgs geometry_msgs
+)
+
+ament_export_dependencies(rosidl_default_runtime)
+
+add_executable(direction_service src/direction_service.cpp)
+
+add_executable(test_service src/test_service.cpp)
+
+add_executable(patrol_with_service src/patrol_with_service.cpp)
+
+add_executable(go_to_pose_action src/go_to_pose_action.cpp)
+
+ament_target_dependencies(direction_service
+  rclcpp
+  sensor_msgs
+)
+
+ament_target_dependencies(test_service
+  rclcpp
+  sensor_msgs
+)
+
+ament_target_dependencies(patrol_with_service
+  rclcpp
+  sensor_msgs
+  geometry_msgs
+)
+
+ament_target_dependencies(go_to_pose_action
+  rclcpp
+  rclcpp_action
+  geometry_msgs
+  nav_msgs
+)
+
+rosidl_get_typesupport_target(cpp_typesupport_target
+  ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+add_dependencies(go_to_pose_action ${cpp_typesupport_target})
+
+target_link_libraries(go_to_pose_action
+  ${cpp_typesupport_target}
+)
+
+target_link_libraries(direction_service
+  ${cpp_typesupport_target}
+)
+
+target_link_libraries(test_service
+  ${cpp_typesupport_target}
+)
+
+target_link_libraries(patrol_with_service
+  ${cpp_typesupport_target}
+)
+
+install(TARGETS
+  direction_service
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(TARGETS
+  test_service
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(TARGETS
+  patrol_with_service
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(TARGETS
+  go_to_pose_action
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+ament_package()
