@@ -16,13 +16,13 @@ public:
         RCLCPP_INFO(this->get_logger(), "Patrol node has been started.");
 
         laser_sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
-        "/scan",                        // Change topic name for real-robot
+        "/fastbot_1/scan",                        // Change topic name for real-robot
         10, 
         std::bind(&Patrol::laser_callback, this, std::placeholders::_1)
         );
 
         cmd_pub_ = this->create_publisher<geometry_msgs::msg::Twist>(
-        "/cmd_vel",                     // Change topic name for real-robot
+        "/fastbot_1/cmd_vel",                     // Change topic name for real-robot
         10
         );
 
