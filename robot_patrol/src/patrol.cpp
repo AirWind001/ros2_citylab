@@ -42,35 +42,73 @@ private:
 
 void laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg) {
 
-    int start_index = std::ceil(( -M_PI/2 - msg->angle_min) / msg->angle_increment);
-    int end_index   = std::floor((  M_PI/2 - msg->angle_min) / msg->angle_increment);
+    int start_index = 0;
+    int end_index   = 449;    
 
     RCLCPP_DEBUG(this->get_logger(),
         "Scan window: start=%d end=%d total_points=%zu",
         start_index, end_index, msg->ranges.size());
 
+    // Check obstacle in front
+    // int center_index = msg->ranges.size() / 2;
+    int center_index = 0;
+    double front_dist = msg->ranges[center_index];
+
+    // RCLCPP_DEBUG(this->get_logger(),
+        // "center index: %.d", center_index);
+
+    // RCLCPP_DEBUG(this->get_logger(),
+    //     "Front distance: %.3f m (threshold=0.45)", front_dist);
+
     double max_distance = 0.0;
-    int best_index = start_index;
+    int best_index = center_index;
+    int best_index_right = center_index;
+    int best_index_left = center_index;
 
-    for (int i = start_index; i <= end_index; i++) {
 
-        double dist = msg->ranges[i];
+
+    for (int i = 375; i <= 449; i++) {
+                double dist = msg->ranges[i];
 
         if (std::isinf(dist)) {
-            RCLCPP_DEBUG(this->get_logger(),
-                "Index %d: INF (ignored)", i);
+            // RCLCPP_DEBUG(this->get_logger(),
+            //     "Index %d: INF (ignored)", i);
             continue;
         }
 
-        // RCLCPP_DEBUG(this->get_logger(),
-        //     "Index %d: dist=%.3f", i, dist);
+        RCLCPP_DEBUG(this->get_logger(),
+            "Index %d: dist=%.3f", i, dist);
 
         if (dist > max_distance) {
             max_distance = dist;
-            best_index = i;
+            best_index_right = i;
         }
     }
 
+    for (int i = 0; i <= 111; i++) {
+        double dist = msg->ranges[i];
+
+        if (std::isinf(dist)) {
+            // RCLCPP_DEBUG(this->get_logger(),
+            //     "Index %d: INF (ignored)", i);
+            continue;
+        }
+
+        RCLCPP_DEBUG(this->get_logger(),
+            "Index %d: dist=%.3f", i, dist);
+
+        if (dist > max_distance) {
+            max_distance = dist;
+            best_index_left = i;
+        }
+    }    
+
+    if(best_index_left > best_index_right){
+    best_index = best_index_left;
+    }
+    else{
+    best_index = best_index_right;
+    }
     // Convert index → angle
     double best_angle = msg->angle_min + best_index * msg->angle_increment;
 
@@ -78,12 +116,7 @@ void laser_callback(const sensor_msgs::msg::LaserScan::SharedPtr msg) {
         "Best ray: index=%d distance=%.3f angle=%.3f rad",
         best_index, max_distance, best_angle);
 
-    // Check obstacle in front
-    int center_index = msg->ranges.size() / 2;
-    double front_dist = msg->ranges[center_index];
 
-    RCLCPP_DEBUG(this->get_logger(),
-        "Front distance: %.3f m (threshold=0.45)", front_dist);
 
     if (front_dist < 0.45) {        // increased front distance to obstacle due to safety considerations
         direction_ = best_angle;
