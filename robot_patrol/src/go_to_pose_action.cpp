@@ -38,6 +38,7 @@ public:
         cmd_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", 10);
 
         RCLCPP_INFO(this->get_logger(), "GoToPose Action Server Started");
+        RCLCPP_INFO(this->get_logger(), "Action Server Ready");
     }
 
 private:
@@ -77,7 +78,7 @@ private:
         const rclcpp_action::GoalUUID &,
         std::shared_ptr<const GoToPoseAction::Goal> goal)
     {
-        RCLCPP_INFO(this->get_logger(), "Received goal");
+        RCLCPP_INFO(this->get_logger(), "Action Called");
         desired_pos_ = goal->goal_pos;
         return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
     }
@@ -85,7 +86,7 @@ private:
     rclcpp_action::CancelResponse handle_cancel(
         const std::shared_ptr<GoalHandle>)
     {
-        RCLCPP_INFO(this->get_logger(), "Goal canceled");
+        RCLCPP_INFO(this->get_logger(), "Goal Cancelled!");
         return rclcpp_action::CancelResponse::ACCEPT;
     }
 
@@ -121,7 +122,7 @@ private:
                 result->status = true;
                 goal_handle->succeed(result);
 
-                RCLCPP_INFO(this->get_logger(), "Goal reached!");
+                RCLCPP_INFO(this->get_logger(), "Action Completed");
                 return;
             }
 

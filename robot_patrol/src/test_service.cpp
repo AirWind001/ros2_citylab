@@ -9,7 +9,7 @@ public:
     TestService() : Node("test_service_node") {
 
         sub_ = this->create_subscription<sensor_msgs::msg::LaserScan>(
-            "/fastbot_1/scan",
+            "scan",
             10,
             std::bind(&TestService::laser_callback, this, _1)
         );
