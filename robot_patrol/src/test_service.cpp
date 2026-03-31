@@ -18,7 +18,7 @@ public:
             "/direction_service"
         );
 
-        RCLCPP_INFO(this->get_logger(), "Test Service Node Started");
+        RCLCPP_INFO(this->get_logger(), "Service Client Ready");
     }
 
 private:
@@ -32,7 +32,7 @@ private:
             RCLCPP_WARN(this->get_logger(), "Waiting for /direction_service...");
             return;
         }
-
+        RCLCPP_INFO(this->get_logger(),"Service Request");
         auto request = std::make_shared<robot_patrol::srv::GetDirection::Request>();
         request->laser_data = *msg;
 
@@ -43,7 +43,7 @@ auto future = client_->async_send_request(
         try {
             auto response = future.get();
             RCLCPP_INFO(this->get_logger(),
-                "Direction: %s", response->direction.c_str());
+                "Service Response: %s", response->direction.c_str());
         } catch (const std::exception &e) {
             RCLCPP_ERROR(this->get_logger(), "Service call failed");
         }
