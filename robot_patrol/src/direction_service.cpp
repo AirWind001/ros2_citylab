@@ -18,7 +18,7 @@ public:
             std::bind(&DirectionService::handle_request, this, _1, _2)
         );
 
-        RCLCPP_INFO(this->get_logger(), "Direction Service Ready");
+        RCLCPP_INFO(this->get_logger(), "Service Server Ready");
     }
 
 private:
