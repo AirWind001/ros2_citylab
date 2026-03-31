@@ -30,12 +30,12 @@ public:
 
         // Subscriber
         odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
-            "/fastbot_1/odom", 10,
+            "/odom", 10,
             std::bind(&GoToPose::odom_callback, this, _1)
         );
 
         // Publisher
-        cmd_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("/fastbot_1/cmd_vel", 10);
+        cmd_pub_ = this->create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", 10);
 
         RCLCPP_INFO(this->get_logger(), "GoToPose Action Server Started");
     }
